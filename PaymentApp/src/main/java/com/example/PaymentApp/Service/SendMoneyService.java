@@ -33,8 +33,8 @@ public class SendMoneyService {
         if (Mybalance > Amounttosend && Reciever != null) {
             List<Wallet> wallet = Reciever.getWallet();
             System.out.println(wallet);
-            Wallet recieverwallet = wallet.get(0);
-            if (recieverwallet != null) {
+            Wallet recieverwallet = wallet.getFirst();
+            if (recieverwallet != null && recieverwallet.isActive()) {
                 float recievercurrentbalance = recieverwallet.getBalance();
                 recieverwallet.setBalance(
                         recievercurrentbalance += Amounttosend
@@ -48,6 +48,7 @@ public class SendMoneyService {
                 walletRepo.save(mywallet);
                 Succesfultransaction = true;//email and logs pending (6)
             }
+            Succesfultransaction = false;
         }
         return Succesfultransaction;
 

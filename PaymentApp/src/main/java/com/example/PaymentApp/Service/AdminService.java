@@ -3,13 +3,13 @@ package com.example.PaymentApp.Service;
 
 import com.example.PaymentApp.Entity.User;
 import com.example.PaymentApp.Entity.Wallet;
+import com.example.PaymentApp.MailSender.EmailSender;
+import com.example.PaymentApp.Repositories.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,12 +19,20 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin")
 public class AdminService {
 
+    @Autowired
+    private EmailServiceIMPL emailServiceIMPL;
+
+    @Autowired
+    private UserRepo userRepo;
+
+
     @GetMapping("/me")
     public String me() {
         return SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
     }
+
 
     @GetMapping("/test")
     public void VerifyAdmin() {
@@ -34,12 +42,15 @@ public class AdminService {
         }
     }
 
-    @PostMapping
-    public void FreezeuserWallet(User UsertoFreeze) {           //authorized request
-        //email to send to          //admin logs
-        Wallet userwallet = UsertoFreeze.getWallet().get(0);        //change to query?
+    @PostMapping("/freeze")
+    public void FreezeuserWallet(@RequestBody EmailSender usertofreeze) {
+        String recipient = usertofreeze.getRecipient();
+        User user = userRepo.findByuserEmail(recipient);
+        Wallet userwallet = user.getWallet().get(0);
         userwallet.setActive(false);
-
+        if (userwallet != null) {
+            emailServiceIMPL.sendSimpleMail(usertofreeze);
+        }
     }
 
 

@@ -16,7 +16,7 @@ public class Wallet {
     @Id
     private ObjectId id;
     private float Balance = 0f;
-    private boolean Active;
+    private boolean active;
 
 
 }
