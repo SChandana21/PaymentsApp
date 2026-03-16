@@ -36,6 +36,8 @@ public class User {
 
     private Date currentDate;
 
+    private List<String> roles;
+
     @DBRef
     private List<Wallet> wallet = new ArrayList<>();
 

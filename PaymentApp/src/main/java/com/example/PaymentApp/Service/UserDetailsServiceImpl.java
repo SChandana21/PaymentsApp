@@ -8,6 +8,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
+import java.util.stream.Collectors;
 
 import java.util.List;
 
@@ -21,10 +24,12 @@ public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundEx
     User user = userRepo.findByuserName(userName);
     if (user == null)
         throw new UsernameNotFoundException("User not found");
+
+    List<GrantedAuthority> authorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE" + role)).collect(Collectors.toList());
     return new org.springframework.security.core.userdetails.User(
             user.getUserName(),
             user.getPassword(),
-            List.of()
+            authorities
     );
 }
 }

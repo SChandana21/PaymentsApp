@@ -47,7 +47,7 @@ public class PublicController {
             System.out.println("POST /user hit");
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(newuser.getUserName(), newuser.getPassword()));
             UserDetails userDetails = userDetailsService.loadUserByUsername(newuser.getUserName());
-            String jwt = jwtutil.Generatetoken(userDetails.getUsername());
+            String jwt = jwtutil.Generatetoken(userDetails);
             return new ResponseEntity<>(jwt, HttpStatus.ACCEPTED);
 
         } catch (Exception e) {
