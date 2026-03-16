@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "wallets")
 public class Wallet {
     @Id
-    private ObjectId WalletID;
+    private ObjectId id;
     private float Balance = 0f;
 
 

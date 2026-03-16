@@ -1,11 +1,16 @@
 package com.example.PaymentApp.Controllers;
 
 import com.example.PaymentApp.Entity.User;
+import com.example.PaymentApp.Service.UserDetailsServiceImpl;
 import com.example.PaymentApp.Service.UserService;
+import com.example.PaymentApp.Util.Jwtutil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +22,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PublicController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private Jwtutil jwtutil;
+
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
     @PostMapping
     public ResponseEntity<?> SignupController(@RequestBody User Newuser) {
@@ -27,5 +39,20 @@ public class PublicController {
             return new ResponseEntity<>( HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> Login(@RequestBody User newuser) {
+        try {
+            System.out.println("POST /user hit");
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(newuser.getUserName(), newuser.getPassword()));
+            UserDetails userDetails = userDetailsService.loadUserByUsername(newuser.getUserName());
+            String jwt = jwtutil.Generatetoken(userDetails.getUsername());
+            return new ResponseEntity<>(jwt, HttpStatus.ACCEPTED);
+
+        } catch (Exception e) {
+            log.error("Exception occured");
+            return new ResponseEntity<>("Incorrect", HttpStatus.BAD_REQUEST);
+        }
     }
 }

@@ -23,7 +23,7 @@ import java.util.Objects;
 public class User {
 
     @Id
-    private ObjectId ID;
+    private ObjectId id;
     @Indexed(unique = true)
     @NonNull
     private String userName;
