@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileInputStream;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +53,8 @@ public class SendMoneyService {
             List<Wallet> wallet = Reciever.getWallet();
             System.out.println(wallet);
             Wallet recieverwallet = wallet.getFirst();
+            String name = SecurityContextHolder.getContext().getAuthentication().getName();
+            User sender = userRepo.findByuserName(name);
             if (recieverwallet != null && recieverwallet.isActive()) {
                 float recievercurrentbalance = recieverwallet.getBalance();
                 recieverwallet.setBalance(
@@ -67,16 +70,25 @@ public class SendMoneyService {
                 recievertransactions.setAmountsent(Amounttosend);
                 recievertransactions.setDatetimeattransaction(LocalDateTime.now());
                 recievertransactions.setTransactionType("Credited");
+                recievertransactions.setSenderEmail(sender.getUserEmail());
                 transactionRepo.save(recievertransactions);
+                if (Reciever.getTransactions() == null) {
+                    Reciever.setTransactions(new ArrayList <>());
+                }
                 Reciever.getTransactions().add(recievertransactions);
-                String name = SecurityContextHolder.getContext().getAuthentication().getName();
-                User sender = userRepo.findByuserName(name);
+                userRepo.save(Reciever);
                 Transactions senderTransaction = new Transactions();
                 senderTransaction.setAmountsent(Amounttosend);
                 senderTransaction.setDatetimeattransaction(LocalDateTime.now());
                 senderTransaction.setTransactionType("Debited");
+                senderTransaction.setRecieveremai(Recieveremail);
                 transactionRepo.save(senderTransaction);
+                if (sender.getTransactions() == null) {
+                    sender.setTransactions(new ArrayList <>());
+                }
                 sender.getTransactions().add(senderTransaction);
+                userRepo.save(sender);
+
                 Succesfultransaction = true;//email and logs pending (6)
             } else {
                 Succesfultransaction = false;

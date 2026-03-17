@@ -42,6 +42,6 @@ public class User {
     private List<Wallet> wallet = new ArrayList<>();
 
     @DBRef
-    private List<Transactions> Transactions = new ArrayList<>();
+    private List<Transactions> transactions = new ArrayList<>();
 
 }

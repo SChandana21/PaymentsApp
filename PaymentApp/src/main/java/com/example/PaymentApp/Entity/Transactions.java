@@ -19,7 +19,10 @@ public class Transactions {
 
     private LocalDateTime datetimeattransaction;
 
-    private String recieverID;
+    private String senderEmail;
+
+    private String recieveremai;
+
 
     private String transactionType;
 
