@@ -23,7 +23,7 @@ public class UserService {
          newuser.setPassword(passwordEncoder.encode(newuser.getPassword()));
          walletService.InitializeWallet(newuser);
          userRepo.save(newuser);
-    }
+        }
 
 
 

@@ -25,7 +25,7 @@ public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundEx
     if (user == null)
         throw new UsernameNotFoundException("User not found");
 
-    List<GrantedAuthority> authorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE" + role)).collect(Collectors.toList());
+    List<GrantedAuthority> authorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role)).collect(Collectors.toList());
     return new org.springframework.security.core.userdetails.User(
             user.getUserName(),
             user.getPassword(),

@@ -41,7 +41,7 @@ public class PublicController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login")      //seperate login from service
     public ResponseEntity<?> Login(@RequestBody User newuser) {
         try {
             System.out.println("POST /user hit");
