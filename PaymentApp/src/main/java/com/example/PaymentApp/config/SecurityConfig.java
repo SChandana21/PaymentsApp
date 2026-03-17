@@ -52,7 +52,11 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers("/user/**").permitAll()
+                        .requestMatchers("/transfer").authenticated()
+                        .requestMatchers("/admin").hasRole("ADMIN")
+
+
                 )
 
                 .addFilterBefore(jwtFilter,

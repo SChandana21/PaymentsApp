@@ -1,4 +1,4 @@
-package com.example.PaymentApp.MailSender;
+package com.example.PaymentApp.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

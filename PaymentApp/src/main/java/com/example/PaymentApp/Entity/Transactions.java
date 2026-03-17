@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 @NoArgsConstructor
 @Getter
@@ -14,10 +15,14 @@ import java.util.Date;
 @Document(collection = "transactions")
 public class Transactions {
     @Id
-    private ObjectId TransactionID;
+    private ObjectId transactionID;
 
-    private Date DateofTransaction;
+    private LocalDateTime datetimeattransaction;
 
-    private String TransactorID;
+    private String recieverID;
+
+    private String transactionType;
+
+    private float amountsent;
 
 }

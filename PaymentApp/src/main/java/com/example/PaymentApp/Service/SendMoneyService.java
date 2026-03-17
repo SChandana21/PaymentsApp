@@ -1,18 +1,26 @@
 package com.example.PaymentApp.Service;
 
+import com.example.PaymentApp.Entity.Transactions;
 import com.example.PaymentApp.Entity.User;
 import com.example.PaymentApp.Entity.Wallet;
+import com.example.PaymentApp.Repositories.TransactionRepo;
 import com.example.PaymentApp.Repositories.UserRepo;
 import com.example.PaymentApp.Repositories.WalletRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileInputStream;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class SendMoneyService {
 
     @Autowired
@@ -24,13 +32,23 @@ public class SendMoneyService {
     @Autowired
     private WalletService  walletService;
 
+
+    @Autowired
+    private TransactionRepo transactionRepo;
+
+
+
     @Transactional
     public boolean SendMoney(float Amounttosend, String Recieveremail) {
         //sender wallet
+        float Mybalance = 0;
         boolean Succesfultransaction  = false;
-        float Mybalance = walletService.GetBalance();
+        Wallet mywallet = walletService.Ipuserwallet().orElse(null);
+        if (mywallet != null) {
+            Mybalance = mywallet.getBalance();
+        }
         User Reciever = userRepo.findByuserEmail(Recieveremail);
-        if (Mybalance > Amounttosend && Reciever != null) {
+        if ((Mybalance > Amounttosend) && (Reciever != null) && mywallet.isActive()) {
             List<Wallet> wallet = Reciever.getWallet();
             System.out.println(wallet);
             Wallet recieverwallet = wallet.getFirst();
@@ -40,17 +58,33 @@ public class SendMoneyService {
                         recievercurrentbalance += Amounttosend
                 );
                 Mybalance = Mybalance - Amounttosend;
-                Wallet mywallet = walletService.Ipuserwallet().orElse(null);
                 if (mywallet != null) {
                     mywallet.setBalance(Mybalance);
                 }
                 walletRepo.save(recieverwallet);
                 walletRepo.save(mywallet);
+                Transactions recievertransactions = new Transactions();
+                recievertransactions.setAmountsent(Amounttosend);
+                recievertransactions.setDatetimeattransaction(LocalDateTime.now());
+                recievertransactions.setTransactionType("Credited");
+                transactionRepo.save(recievertransactions);
+                Reciever.getTransactions().add(recievertransactions);
+                String name = SecurityContextHolder.getContext().getAuthentication().getName();
+                User sender = userRepo.findByuserName(name);
+                Transactions senderTransaction = new Transactions();
+                senderTransaction.setAmountsent(Amounttosend);
+                senderTransaction.setDatetimeattransaction(LocalDateTime.now());
+                senderTransaction.setTransactionType("Debited");
+                transactionRepo.save(senderTransaction);
+                sender.getTransactions().add(senderTransaction);
                 Succesfultransaction = true;//email and logs pending (6)
+            } else {
+                Succesfultransaction = false;
             }
-            Succesfultransaction = false;
-        }
+            }
         return Succesfultransaction;
+
+
 
     }
 

@@ -1,6 +1,6 @@
 package com.example.PaymentApp.Service;
 
-import com.example.PaymentApp.MailSender.EmailSender;
+import com.example.PaymentApp.DTO.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
