@@ -22,8 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PublicController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+
     @Autowired
     private Jwtutil jwtutil;
 
@@ -42,12 +41,10 @@ public class PublicController {
     }
 
     @PostMapping("/login")      //seperate login from service
-    public ResponseEntity<?> Login(@RequestBody User newuser) {
+    public ResponseEntity<String> Login(@RequestBody User newuser) {
         try {
             System.out.println("POST /user hit");
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(newuser.getUserName(), newuser.getPassword()));
-            UserDetails userDetails = userDetailsService.loadUserByUsername(newuser.getUserName());
-            String jwt = jwtutil.Generatetoken(userDetails);
+            String jwt = userService.Login(newuser);
             return new ResponseEntity<>(jwt, HttpStatus.ACCEPTED);
 
         } catch (Exception e) {

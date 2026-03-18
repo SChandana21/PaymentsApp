@@ -7,17 +7,21 @@ import com.example.PaymentApp.Entity.Wallet;
 import com.example.PaymentApp.DTO.EmailSender;
 import com.example.PaymentApp.Repositories.TransactionRepo;
 import com.example.PaymentApp.Repositories.UserRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
+@Slf4j
 public class AdminService {
 
     @Autowired
@@ -26,6 +30,8 @@ public class AdminService {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private TransactionRepo transactionRepo;
@@ -69,6 +75,16 @@ public class AdminService {
             return all;
 
         }
+
+    public void SignupAdmin(User newadmin) {
+            try {
+                newadmin.setPassword(passwordEncoder.encode(newadmin.getPassword()));
+                newadmin.setRoles(Arrays.asList("ADMIN"));
+                userRepo.save(newadmin);
+            } catch (Exception e) {
+                log.error("Unable to create Admin!");
+            }
+    }
 
 
 
