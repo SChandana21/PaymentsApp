@@ -56,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/transfer").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/transactions/**").authenticated()
+                        .requestMatchers("/wallet").authenticated()
 
 
                 )

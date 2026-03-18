@@ -6,6 +6,8 @@ import com.example.PaymentApp.Repositories.UserRepo;
 import com.example.PaymentApp.Repositories.WalletRepo;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,19 +37,30 @@ public class WalletService {
         newuser.getWallet().add(wallet);
     }
 
-    public Optional<Wallet> Ipuserwallet() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User userf = userRepo.findByuserName(username);
-        List<Wallet> wallet = userf.getWallet();
-        Optional<Wallet> userwallet = null;
-        if (!wallet.isEmpty()) {
-            ObjectId walletID = wallet.get(0).getId();
-            System.out.println(walletID);
-            userwallet = walletRepo.findById(walletID);
-            System.out.println(userwallet);
+    public Optional<Wallet> Ipuserwallet()  {
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null
+                || !auth.isAuthenticated()
+                || auth instanceof AnonymousAuthenticationToken) {
+
+            throw new RuntimeException("User not authenticated");
         }
-        return userwallet;
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            User userf = userRepo.findByuserName(username);
+        if (userf == null) {
+            throw new RuntimeException("User not found");
+        }
+            List<Wallet> wallet = userf.getWallet();
+            Optional<Wallet> userwallet = null;
+            if (!wallet.isEmpty()) {
+                ObjectId walletID = wallet.get(0).getId();
+                System.out.println(walletID);
+                userwallet = walletRepo.findById(walletID);
+                System.out.println(userwallet);
+            }
+            return userwallet;
+
     }
 
     public float GetBalance() {

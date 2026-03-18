@@ -40,7 +40,7 @@ public class PublicController {
         return new ResponseEntity<>("Welcome, User has been created", HttpStatus.CREATED);
     }
 
-    @PostMapping("/login")      //seperate login from service
+    @PostMapping("/login")
     public ResponseEntity<String> Login(@RequestBody User newuser) {
         try {
             System.out.println("POST /user hit");
