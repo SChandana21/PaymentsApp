@@ -29,13 +29,13 @@ public class AdminController {
 
 
     @PostMapping("/CreatenewAdmin")
-    public ResponseEntity<?> CreatenewAdmin(@RequestBody User newuser) {
+    public ResponseEntity<String> CreatenewAdmin(@RequestBody User newuser) {
         try {
             adminService.SignupAdmin(newuser);
-            return  new ResponseEntity<>(HttpStatus.CREATED);
+            return  new ResponseEntity<>("New Admin has been created", HttpStatus.CREATED);
         } catch (Exception e) {
             log.error("Unable to create admin");
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Conflict in creating the Admin", HttpStatus.CONFLICT);
         }
     }
 

@@ -35,9 +35,9 @@ public class PublicController {
             userService.Signup(Newuser);
         } catch (Exception e) {
         log.error("Error occured while creating user, Please try again");
-            return new ResponseEntity<>( HttpStatus.CONFLICT);
+            return new ResponseEntity<>( "Conflict in creating the user", HttpStatus.CONFLICT);
         }
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>("Welcome, User has been created", HttpStatus.CREATED);
     }
 
     @PostMapping("/login")      //seperate login from service
