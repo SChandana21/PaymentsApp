@@ -3,6 +3,7 @@ package com.example.PaymentApp.Repositories;
 import com.example.PaymentApp.Entity.Transactions;
 
 import com.example.PaymentApp.Entity.User;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -25,13 +26,19 @@ public class UserQueryGetter {
     public List<Transactions> QueryGetter(String transactionType) {
         Query query = new Query();
         //transaction Criteria
+        String credentials = SecurityContextHolder.getContext().getAuthentication().getName();
+        User byuserName = userRepo.findByuserName(credentials);
+        Transactions transactions1 = byuserName.getTransactions().get(0);
+        ObjectId transactionID = transactions1.getTransactionID();
+        Criteria transactionenter = Criteria.where("transactionID").is(transactionID);
         Criteria transactionCriteria = Criteria.where("transactionType").is(transactionType);
-        query.addCriteria(transactionCriteria);
+        query.addCriteria(new Criteria().andOperator(transactionenter, transactionCriteria));
         List <Transactions> transactions = mongoTemplate.find(query, Transactions.class);
         return transactions;
     }
 
     public List<Transactions> FindByDate(int days) {
+
         Query query = new Query();
         Criteria dateCriteria = Criteria.where("datetimeattransaction").in(LocalDateTime.now().minusDays(days));
         query.addCriteria(dateCriteria);

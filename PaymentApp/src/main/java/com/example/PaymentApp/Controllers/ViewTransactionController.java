@@ -24,4 +24,12 @@ public class ViewTransactionController {
         return new ResponseEntity<>(findbyamount, HttpStatus.FOUND);
     }
 
+
+    @PostMapping("/bytype")
+    public ResponseEntity<List<Transactions>> FindTransactionByType(@RequestBody TransactionResponseDTO Transactiondetail) {
+        String Type = Transactiondetail.getTransactionType();
+        List<Transactions> findbyamount = userQueryGetter.QueryGetter(Type);
+        return new ResponseEntity<>(findbyamount, HttpStatus.FOUND);
+    }
+
 }

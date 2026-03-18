@@ -47,6 +47,22 @@ public class AdminService {
             return true;
         }
 
+    @Transactional
+    public boolean UnFreezeUser(EmailSender usertofreeze) {
+        try {
+            String recipient = usertofreeze.getRecipient();
+            User user = userRepo.findByuserEmail(recipient);
+            Wallet userwallet = user.getWallet().getFirst();
+            userwallet.setActive(true);
+            if (userwallet != null) {
+                emailServiceIMPL.sendSimpleMail(usertofreeze);
+            }
+        } catch (Exception e) {
+            return  false;
+        }
+        return true;
+    }
+
 
         public List<Transactions> GetallTransactions() {
             List<Transactions> all = transactionRepo.findAll();

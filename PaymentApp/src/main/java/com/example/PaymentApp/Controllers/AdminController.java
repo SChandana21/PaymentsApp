@@ -25,6 +25,15 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
+
+    @PostMapping("/unfreeze")
+    public ResponseEntity<?> UnFreezeuserWallet(@RequestBody EmailSender usertofreeze) {
+        boolean userfreezed = adminService.FreezeUser(usertofreeze);
+        if (userfreezed)
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
+    }
+
     @GetMapping
     public ResponseEntity<List<Transactions>> GetTransactions() {
         List<Transactions> transactions = adminService.GetallTransactions();
@@ -34,5 +43,7 @@ public class AdminController {
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+
 
 }
