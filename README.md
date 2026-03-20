@@ -6,7 +6,7 @@ This project is designed to showcase production-grade backend architecture and s
 
 ## Tech Stack
 
-- Java 17
+- Java 21
 - Spring Boot
 - Spring Security (JWT)
 - MongoDB
