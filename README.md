@@ -3,3 +3,13 @@ VaultPay is a RESTful wallet service that enables users to deposit funds, transf
 Administrative features include wallet suspension, system-wide transaction visibility, and automated email notifications to affected users.
 
 This project is designed to showcase production-grade backend architecture and secure financial workflow handling using Java and Spring Boot.
+
+## Tech Stack
+
+- Java 17
+- Spring Boot
+- Spring Security (JWT)
+- MongoDB
+- Spring Data MongoDB
+- Maven
+- REST APIs
